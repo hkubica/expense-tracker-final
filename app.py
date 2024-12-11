@@ -13,7 +13,7 @@ from sklearn.linear_model import LinearRegression
 app = Flask(__name__)
 
 #Path to file
-db_path = r'C:\Users\d1989461\OneDrive - Cardiff University\Desktop\expense-tracker-final\db\expensescopy.db'
+db_path = 'db/expensescopy.db'  # Relative path
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
 app.config['SECRET_KEY'] = os.urandom(24)  #Secure Secret Key made
 
