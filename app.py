@@ -13,9 +13,12 @@ from sklearn.linear_model import LinearRegression
 app = Flask(__name__)
 
 #Path to file
-db_path = '/data/db/expensescopy.db'
+db_path = os.path.join(os.getcwd(), 'data', 'db', 'expensescopy.db')
 app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_path}'
 app.config['SECRET_KEY'] = os.urandom(24)  #Secure Secret Key made
+#Ensure the data/db directory exists
+os.makedirs(os.path.join(os.getcwd(), 'data', 'db'), exist_ok=True)
+
 
 #Database and Login manager set up
 db = SQLAlchemy(app)
@@ -216,39 +219,38 @@ def predict_budget():
     return jsonify({'predicted_budget': predicted_budget})
 
 #Route in order to evaluate the model's performance
-@app.route('/evaluate', methods=['GET'])
-@login_required
-def evaluate_model():
+#@app.route('/evaluate', methods=['GET'])
+#@login_required
+#def evaluate_model():
     #Get all expenses for the evaluation
-    user_expenses = Expense.query.filter_by(user_id=current_user.id).all()
+   # user_expenses = Expense.query.filter_by(user_id=current_user.id).all()
 
     #Make sure there is enougn data points for evaluation
-    if len(user_expenses) < 2:
-        return jsonify({'error': 'Not enough data to evaluate the model'})
+    #if len(user_expenses) < 2:
+        #return jsonify({'error': 'Not enough data to evaluate the model'})
 
     #Prepare the data ready for the evalutation
-    dates = list(range(len(user_expenses))) #Indices used as pseudo dates
-    amounts = [expense.amount for expense in user_expenses]
+    #dates = list(range(len(user_expenses))) #Indices used as pseudo dates
+    #amounts = [expense.amount for expense in user_expenses]
 
     #Convert the data to numpy arrays in order to train and test
-    X = np.array(dates).reshape(-1, 1)
-    y = np.array(amounts)
+    #X = np.array(dates).reshape(-1, 1)
+    #y = np.array(amounts)
 
     #Train the model
-    model = LinearRegression()
-    model.fit(X, y)
+    #model = LinearRegression()
+    #model.fit(X, y)
 
     #Get predictions and calculate error metrics
-    predictions = model.predict(X)
-    mae = np.mean(np.abs(predictions - y))
-    rmse = np.sqrt(np.mean((predictions - y) ** 2))
+    #predictions = model.predict(X)
+    #mae = np.mean(np.abs(predictions - y))
+    #rmse = np.sqrt(np.mean((predictions - y) ** 2))
 
     #Send back results as JSON
-    return jsonify({
-        'Mean Absolute Error (MAE)': round(mae, 2),
-        'Root Mean Squared Error (RMSE)': round(rmse, 2)
-    })
-
+    #return jsonify({
+        #'Mean Absolute Error (MAE)': round(mae, 2),
+        #'Root Mean Squared Error (RMSE)': round(rmse, 2)
+    #})
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()  # Ensure database tables are created
