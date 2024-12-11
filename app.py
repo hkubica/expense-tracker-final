@@ -252,9 +252,12 @@ def predict_budget():
         #'Root Mean Squared Error (RMSE)': round(rmse, 2)
     #})
 if __name__ == '__main__':
+    import os
     with app.app_context():
-        db.create_all()  # Ensure database tables are created
-    app.run(debug=False, host="0.0.0.0", port=5000)  # Debug=False for production
+        db.create_all()  #Ensure database tables are created
+    #Use port 8080, required by OpenShift
+    port = int(os.environ.get("PORT", 8080))
+    app.run(debug=False, host="0.0.0.0", port=port)  #Debug=False for production
 
 
 
