@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Model Evaluation</title>
+    <!--Link to the stylesheet for consistent page styling-->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Model Evaluation Metrics</h1>
+            <!--Quick link to navigate back to the homepage-->
+            <a href="/" class="back-button">Back to Home</a>
+        </header>
+
+            <!--Section to display the evaluation results of the machine learning model-->
+        <section class="evaluation">
+            <h2>Model Performance</h2>
+            <!--Display the Mean Absolute Error (MAE)-->
+            <p><strong>Mean Absolute Error (MAE):</strong> {{ mae }}</p>
+                        <!--Display the Root Mean Squared Error (RMSE)-->
+            <p><strong>Root Mean Squared Error (RMSE):</strong> {{ rmse }}</p>
+        </section>
+    </div>
+</body>
+</html>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <h1>Financial Tracker</h1>
+    <h2>Register</h2>
+    
+    <!--Show any flash messages e.g. error or success-->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div class="alert alert-{{ category }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <!--Registration form for new users-->
+    <form action="/register" method="POST">
+        <!--Field for entering a username-->
+        <div class="form-group">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+        </div>
+        
+        <!--Field for entering a password-->
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        
+        <!--Button to submit the registration form-->
+        <button type="submit" class="register-button">Register</button>
+    </form>
+    <!--Quick link to the login page if the user already has an account-->
+    <a href="/login" class="login-link">Login here</a>
+</body>
+</html>

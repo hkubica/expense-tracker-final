@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Tracker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Expense Tracker</h1>
+            <a href="/logout" class="logout-button">Logout</a>
+        </header>
+
+        <!--Show any flash messages e.g. success, error-->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <!--Progress towards user's monthly spending goal-->
+        <div class="progress-container">
+            <h2>Monthly Spending Goal Progress</h2>
+            <p>{{ progress_percentage|round(2) }}% towards your goal of £{{ current_user.monthly_goal }}</p>
+            <div class="progress-bar">
+                <div class="progress" style="width: {{ progress_percentage|round(2) }}%;"></div>
+            </div>
+        </div>
+
+        <!--Notification if the user has hit a milestone-->
+        {% if milestone_message %}
+            <div class="alert alert-success">
+                {{ milestone_message }}
+            </div>
+        {% endif %}
+
+        <!--Budget Precition Section-->
+        <section class="budget-prediction">
+            <h2>Predicted Spending for Next Month</h2>
+            <button id="predictButton">Get Predicted Spending</button>
+            <p id="predictionResult"></p>
+        </section>
+
+        <!--Expense Form Section- add new expenses here-->
+        <section class="expense-form">
+            <form action="/add" method="POST">
+                <div class="form-group">
+                    <label for="date">Date:</label>
+                    <input type="date" id="date" name="date" required>
+                </div>
+                <div class="form-group">
+                    <label for="category">Category:</label>
+                    <select id="category" name="category" required>
+                        <option value="Food">Food</option>
+                        <option value="Transport">Transport</option>
+                        <option value="Entertainment">Entertainment</option>
+                        <option value="Utilities">Utilities</option>
+                        <option value="Health">Health</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="amount">Amount:</label>
+                    <input type="number" step="0.01" id="amount" name="amount" required>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description:</label>
+                    <input type="text" id="description" name="description">
+                </div>
+                <button type="submit" class="add-expense-button">Add Expense</button>
+            </form>
+
+            <!--Form to update the user's monthly spending goal-->
+            <h3>Current Monthly Spending Goal: £{{ current_user.monthly_goal }}</h3>
+            <form action="/set_goal" method="POST">
+                <label for="monthly_goal">Set Your Monthly Spending Goal (£):</label>
+                <input type="number" step="0.01" id="monthly_goal" name="monthly_goal" required>
+                <button type="submit" class="update-goal-button">Update Goal</button>
+            </form>
+        </section>
+    <!--Quick link to view all past expenses-->
+        <section class="view-expenses">
+            <a href="/expenses" class="view-expenses-button">View Expenses</a>
+        </section>
+    </div>
+
+    <!--Handle the "Get Predicted Spending" button functionality-->
+    <script>
+        document.getElementById('predictButton').addEventListener('click', function() {
+            fetch('/predict_budget')
+                .then(response => response.json())
+                .then(data => {
+                     //Display the predicted budget nicely formatted
+                    document.getElementById('predictionResult').textContent = 'Predicted Budget: £' + data.predicted_budget.toFixed(2);
+                })
+                .catch(error => {
+                    console.error('Error fetching the budget prediction:', error);
+                });
+        });
+    </script>
+</body>
+</html>
